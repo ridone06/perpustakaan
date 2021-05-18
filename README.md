@@ -12,7 +12,7 @@ Aplikasi perpustakaan yang mencakup proses peminjaman dan pengembalian buku meng
 
 * [Web API](#web-api)
   * [Installation](#installation-web-api)
-  * [Database](#installation-web-api)
+  * [Database](#database)
   * [Swagger](#swagger)
 * [Web UI](#web-ui)
   * [Installation](#installation-web-ui)
