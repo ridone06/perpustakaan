@@ -38,6 +38,11 @@ $ dotnet restore
 # builid app
 $ dotnet build
 
+# Make sure the ConnectionStrings in appsettings.json must be setup because there is an automatic database migration. 
+"ConnectionStrings": {
+   "DefaultConnection": "Server=localhost;Initial Catalog=Perpustakaan;User Id=sa;password=P@ssw0rd;MultipleActiveResultSets=true;"
+ },
+  
 # running app
 $ dotnet run
 ```
@@ -51,7 +56,7 @@ Pastikan `ConnectionStrings` pada `appsettings.json` sesuai dengan server databs
 
 ``` bash
  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Initial Catalog=Perpustakaan;User Id=sa;password=P@ssw0rd;Trusted_Connection=True;MultipleActiveResultSets=true;"
+    "DefaultConnection": "Server=localhost;Initial Catalog=Perpustakaan;User Id=sa;password=P@ssw0rd;MultipleActiveResultSets=true;"
   },
 ```
 
