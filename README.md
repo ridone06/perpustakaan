@@ -27,7 +27,7 @@ Web API yang digunakan untuk backend aplikasi **Perpustakaan** di buat menggunak
 
 ``` bash
 # clone the repo
-$ git clone https://github.com/coreui/coreui-free-react-admin-template.git my-project
+$ git clone https://github.com/ridone06/perpustakaan.git my-project
 
 # go into app's directory
 $ cd Perpustakaan.Api
@@ -75,7 +75,7 @@ Web UI yang digunakan untuk frontend aplikasi **Perpustakaan** di buat menggunak
 
 ``` bash
 # clone the repo
-$ git clone https://github.com/coreui/coreui-free-react-admin-template.git my-project
+$ git clone https://github.com/ridone06/perpustakaan.git my-project
 
 # go into app's directory
 $ cd perpustakaan-ui
