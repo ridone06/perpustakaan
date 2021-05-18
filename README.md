@@ -43,7 +43,7 @@ $ dotnet run
 ```
 Buka http://localhost:5000 kemudian akan di arahkan ke halaman swagger documentations api berikut : 
 
-![swagger](https://drive.google.com/file/d/1t4nz6AZIfQ30bMcYn4H0h11grGzvE3D3/view?usp=sharing)
+![swagger](https://github.com/ridone06/perpustakaan/blob/70e70948edab221161d505e9964994ffe42983f7/capture/1.%20Swager%20API.png)
 
 ### Database
 Database aplikasi perpustakaan menggunakan **SQL Server** dan databse akan otomatis dibuat pada saat running aplikasi web api `dotnet run` menggunakan **[Entity Frmawork Core Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)**.
@@ -88,7 +88,7 @@ $ npm start
 ```
 Buka http://localhost:3000 kemudian akan di arahkan ke halaman aplikasi perpustakaan berikut contoh nya: 
 
-![aplikasi-perpustakaan](https://drive.google.com/file/d/1t4nz6AZIfQ30bMcYn4H0h11grGzvE3D3/view?usp=sharing)
+![aplikasi-perpustakaan](https://github.com/ridone06/perpustakaan/blob/70e70948edab221161d505e9964994ffe42983f7/capture/2.%20Aplikasi%20Perpustakaan.png)
 
 
 ## Module
