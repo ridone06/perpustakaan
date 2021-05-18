@@ -10,18 +10,18 @@ Aplikasi perpustakaan yang mencakup proses peminjaman dan pengembalian buku meng
 
 ## Table of Contents
 
-* [Web API](#web-api)
-  * [Installation](#installation-web-api)
+* [REST API](#rest-api)
+  * [Installation](#installation-rest-api)
   * [Database](#database)
   * [Swagger](#swagger)
 * [Web UI](#web-ui)
   * [Installation](#installation-web-ui)
 * [Module](#module)
 
-## Web API
-Web API yang digunakan untuk backend aplikasi **Perpustakaan** di buat menggunakan **[ASP .Net Core](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.1)** dan **[SQL Server](https://docs.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver15)**
+## REST API
+REST API yang digunakan untuk backend aplikasi **Perpustakaan** di buat menggunakan **[ASP .Net Core](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-3.1)** dan **[SQL Server](https://docs.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver15)**
 
-### Installation Web API
+### Installation REST API
 
 #### Clone repo
 
