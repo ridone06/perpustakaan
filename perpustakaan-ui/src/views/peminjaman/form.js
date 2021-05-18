@@ -9,10 +9,10 @@ import {
     CCol,
     CForm,
     CFormGroup,
-    CFormText,
     CInput,
     CLabel,
     CSelect,
+    CInvalidFeedback,
     CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
@@ -29,9 +29,23 @@ class FormPeminjaman extends Component {
             param: {
                 TanggalPinjam: "",
                 TanggalKembali: "",
-                AnggotaId: 0,
+                AnggotaId: null,
                 PetugasId: 1,
                 Details: null
+            },
+            formValidation: {
+                TanggalPinjam: {
+                    invalid: null,
+                    message: "Please enter tanggal pinjam"
+                },
+                TanggalKembali: {
+                    invalid: null,
+                    message: "Please enter tanggal kembali"
+                },
+                AnggotaId: {
+                    invalid: null,
+                    message: "Please select anggota"
+                }
             }
         }
 
@@ -58,6 +72,9 @@ class FormPeminjaman extends Component {
 
     onInputChane(key, value) {
         this.state.param[key] = value;
+        if (this.state.formValidation[key])
+            this.state.formValidation[key].invalid = (this.state.param[key] || "") === "";
+
         this.setState({
             param: {
                 ...this.state.param
@@ -66,6 +83,15 @@ class FormPeminjaman extends Component {
     }
 
     onAddBuku(detail) {
+        if ((detail.BukuId || "") === "") {
+            alert("Please select buku.");
+            return;
+        }
+        if ((this.state.param.Details || []).filter((f) => { return f.BukuId == detail.BukuId }).length > 0) {
+            alert("buku already exist.");
+            return;
+        }
+
         let details = this.state.param.Details || [];
         details.push(detail);
         this.setState({
@@ -90,15 +116,36 @@ class FormPeminjaman extends Component {
     }
 
     onClickSave() {
-        this.state.param.PetugasId = 1;
-        this.props.savePeminjaman(this.state.param, this.props.dataId);
+        if (this.isValid()) {
+            this.state.param.PetugasId = 1;
+            this.props.savePeminjaman(this.state.param, this.props.dataId);
+        }
+    }
+
+    isValid() {
+        this.state.formValidation.TanggalPinjam.invalid = (this.state.param.TanggalPinjam || "") === "";
+        this.state.formValidation.TanggalKembali.invalid = (this.state.param.TanggalKembali || "") === "";
+        this.state.formValidation.AnggotaId.invalid = (this.state.param.AnggotaId || "") === "";
+
+        this.setState({
+            ...this.state.formValidation
+        });
+
+        let isValid = !this.state.formValidation.TanggalPinjam.invalid
+            && !this.state.formValidation.TanggalKembali.invalid
+            && !this.state.formValidation.AnggotaId.invalid;
+
+        if (isValid && (this.state.param.Details || []).length <= 0) {
+            isValid = false;
+            alert("Please add buku");
+        }
+
+        return isValid;
     }
 
     render() {
         const { listBuku = null, isLoading = false, listAnggota = null, disabled = false } = this.props;
-        const { param } = this.state;
-
-        console.log("disabled", disabled);
+        const { param, formValidation } = this.state;
 
         return (
             <>
@@ -122,8 +169,12 @@ class FormPeminjaman extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.TanggalPinjam}
-                                                onChange={(e) => this.onInputChane("TanggalPinjam", e.target.value)} />
-                                            <CFormText className="help-block">Please enter tanggal pinjam</CFormText>
+                                                onChange={(e) => this.onInputChane("TanggalPinjam", e.target.value)}
+                                                invalid={formValidation.TanggalPinjam.invalid} />
+                                            {
+                                                (formValidation.TanggalPinjam.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.TanggalPinjam.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                     <CFormGroup row>
@@ -138,8 +189,12 @@ class FormPeminjaman extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.TanggalKembali}
-                                                onChange={(e) => this.onInputChane("TanggalKembali", e.target.value)} />
-                                            <CFormText className="help-block">Please enter tanggal kembali</CFormText>
+                                                onChange={(e) => this.onInputChane("TanggalKembali", e.target.value)}
+                                                invalid={formValidation.TanggalKembali.invalid} />
+                                            {
+                                                (formValidation.TanggalKembali.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.TanggalKembali.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>
@@ -153,8 +208,9 @@ class FormPeminjaman extends Component {
                                                 id="select"
                                                 value={param.AnggotaId}
                                                 disabled={disabled}
-                                                onChange={(e) => this.onInputChane("AnggotaId", e.target.value)}>
-                                                <option value="0">Please select</option>
+                                                onChange={(e) => this.onInputChane("AnggotaId", e.target.value)}
+                                                invalid={formValidation.AnggotaId.invalid}>
+                                                <option value="">Please select</option>
                                                 {
                                                     (listAnggota && listAnggota.length > 0) ?
                                                         listAnggota.map((item, index) => {
@@ -162,7 +218,10 @@ class FormPeminjaman extends Component {
                                                         }) : null
                                                 }
                                             </CSelect>
-                                            <CFormText className="help-block">Please select anggota</CFormText>
+                                            {
+                                                (formValidation.AnggotaId.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.AnggotaId.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>

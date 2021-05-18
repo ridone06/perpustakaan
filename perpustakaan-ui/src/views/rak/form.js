@@ -9,10 +9,10 @@ import {
     CCol,
     CForm,
     CFormGroup,
-    CFormText,
     CInput,
     CLabel,
     CTextarea,
+    CInvalidFeedback,
     CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
@@ -26,6 +26,12 @@ class FormRak extends Component {
             param: {
                 Kode: "",
                 Lokasi: ""
+            },
+            formValidation: {
+                Kode: {
+                    invalid: null,
+                    message: "Please enter kode"
+                }
             }
         }
 
@@ -48,6 +54,9 @@ class FormRak extends Component {
 
     onInputChane(key, value) {
         this.state.param[key] = value;
+        if (this.state.formValidation[key])
+            this.state.formValidation[key].invalid = (this.state.param[key] || "") === "";
+
         this.setState({
             param: {
                 ...this.state.param
@@ -56,12 +65,24 @@ class FormRak extends Component {
     }
 
     onClickSave() {
-        this.props.save(this.state.param, this.props.kode);
+        if (this.isValid()) {
+            this.props.save(this.state.param, this.props.kode);
+        }
+    }
+
+    isValid() {
+        this.state.formValidation.Kode.invalid = (this.state.param.Kode || "") === "";
+
+        this.setState({
+            ...this.state.formValidation
+        });
+
+        return !this.state.formValidation.Kode.invalid;;
     }
 
     render() {
         const { isLoading = false, disabled = false, kode } = this.props;
-        const { param } = this.state;
+        const { param, formValidation } = this.state;
 
         return (
             <>
@@ -85,8 +106,12 @@ class FormRak extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.Kode}
-                                                onChange={(e) => this.onInputChane("Kode", e.target.value)} />
-                                            <CFormText className="help-block">Please enter kode</CFormText>
+                                                onChange={(e) => this.onInputChane("Kode", e.target.value)}
+                                                invalid={formValidation.Kode.invalid} />
+                                            {
+                                                (formValidation.Kode.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.Kode.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                     <CFormGroup row>
@@ -102,7 +127,6 @@ class FormRak extends Component {
                                                 disabled={disabled}
                                                 value={param.Lokasi}
                                                 onChange={(e) => this.onInputChane("Lokasi", e.target.value)} />
-                                            <CFormText className="help-block">Please enter lokasi</CFormText>
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>

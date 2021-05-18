@@ -9,10 +9,10 @@ import {
     CCol,
     CForm,
     CFormGroup,
-    CFormText,
     CInput,
     CLabel,
     CSelect,
+    CInvalidFeedback,
     CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
@@ -32,6 +32,28 @@ class FormBuku extends Component {
                 PengarangId: 0,
                 PenerbitId: 0,
                 KodeRak: ""
+            },
+            formValidation: {
+                Judul: {
+                    invalid: null,
+                    message: "Please enter judul"
+                },
+                TahunTerbit: {
+                    invalid: null,
+                    message: "Please enter tahun terbit"
+                },
+                PengarangId: {
+                    invalid: null,
+                    message: "Please select pengarang"
+                },
+                PenerbitId: {
+                    invalid: null,
+                    message: "Please select penerbit"
+                },
+                KodeRak: {
+                    invalid: null,
+                    message: "Please select rak"
+                }
             }
         }
 
@@ -57,6 +79,9 @@ class FormBuku extends Component {
 
     onInputChane(key, value) {
         this.state.param[key] = value;
+        if (this.state.formValidation[key])
+            this.state.formValidation[key].invalid = (this.state.param[key] || "") === "";
+
         this.setState({
             param: {
                 ...this.state.param
@@ -65,13 +90,33 @@ class FormBuku extends Component {
     }
 
     onClickSave() {
-        this.state.param.PetugasId = 1;
-        this.props.save(this.state.param, this.props.dataId);
+        if (this.isValid()) {
+            this.state.param.PetugasId = 1;
+            this.props.save(this.state.param, this.props.dataId);
+        }
+    }
+
+    isValid() {
+        this.state.formValidation.Judul.invalid = (this.state.param.Judul || "") === "";
+        this.state.formValidation.TahunTerbit.invalid = (this.state.param.TahunTerbit || "") === "";
+        this.state.formValidation.PengarangId.invalid = (this.state.param.PengarangId || "") === "";
+        this.state.formValidation.PenerbitId.invalid = (this.state.param.PenerbitId || "") === "";
+        this.state.formValidation.KodeRak.invalid = (this.state.param.KodeRak || "") === "";
+
+        this.setState({
+            ...this.state.formValidation
+        });
+
+        return !this.state.formValidation.Judul.invalid
+            && !this.state.formValidation.TahunTerbit.invalid
+            && !this.state.formValidation.PengarangId.invalid
+            && !this.state.formValidation.PenerbitId.invalid
+            && !this.state.formValidation.KodeRak.invalid;;
     }
 
     render() {
         const { listPengarang = null, isLoading = false, listPenerbit = null, listRak = null, disabled = false } = this.props;
-        const { param } = this.state;
+        const { param, formValidation } = this.state;
 
         return (
             <>
@@ -95,8 +140,12 @@ class FormBuku extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.Judul}
-                                                onChange={(e) => this.onInputChane("Judul", e.target.value)} />
-                                            <CFormText className="help-block">Please enter judul</CFormText>
+                                                onChange={(e) => this.onInputChane("Judul", e.target.value)}
+                                                invalid={formValidation.Judul.invalid} />
+                                            {
+                                                (formValidation.Judul.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.Judul.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                     <CFormGroup row>
@@ -111,8 +160,12 @@ class FormBuku extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.TahunTerbit}
-                                                onChange={(e) => this.onInputChane("TahunTerbit", e.target.value)} />
-                                            <CFormText className="help-block">Please enter tanggal tahun terbit</CFormText>
+                                                onChange={(e) => this.onInputChane("TahunTerbit", e.target.value)}
+                                                invalid={formValidation.TahunTerbit.invalid} />
+                                            {
+                                                (formValidation.TahunTerbit.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.TahunTerbit.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                     <CFormGroup row>
@@ -124,8 +177,9 @@ class FormBuku extends Component {
                                                 id="KodeRak"
                                                 value={param.KodeRak}
                                                 disabled={disabled}
+                                                invalid={formValidation.KodeRak.invalid}
                                                 onChange={(e) => this.onInputChane("KodeRak", e.target.value)}>
-                                                <option value="0">Please select</option>
+                                                <option value="">Please select</option>
                                                 {
                                                     (listRak && listRak.length > 0) ?
                                                         listRak.map((item, index) => {
@@ -133,7 +187,10 @@ class FormBuku extends Component {
                                                         }) : null
                                                 }
                                             </CSelect>
-                                            <CFormText className="help-block">Please select rak</CFormText>
+                                            {
+                                                (formValidation.KodeRak.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.KodeRak.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>
@@ -147,8 +204,9 @@ class FormBuku extends Component {
                                                 id="PenerbitId"
                                                 value={param.PenerbitId}
                                                 disabled={disabled}
+                                                invalid={formValidation.PenerbitId.invalid}
                                                 onChange={(e) => this.onInputChane("PenerbitId", e.target.value)}>
-                                                <option value="0">Please select</option>
+                                                <option value="">Please select</option>
                                                 {
                                                     (listPenerbit && listPenerbit.length > 0) ?
                                                         listPenerbit.map((item, index) => {
@@ -156,7 +214,10 @@ class FormBuku extends Component {
                                                         }) : null
                                                 }
                                             </CSelect>
-                                            <CFormText className="help-block">Please select penerbit</CFormText>
+                                            {
+                                                (formValidation.PenerbitId.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.PenerbitId.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                     <CFormGroup row>
@@ -168,8 +229,9 @@ class FormBuku extends Component {
                                                 id="PengarangId"
                                                 value={param.PengarangId}
                                                 disabled={disabled}
+                                                invalid={formValidation.PengarangId.invalid}
                                                 onChange={(e) => this.onInputChane("PengarangId", e.target.value)}>
-                                                <option value="0">Please select</option>
+                                                <option value="">Please select</option>
                                                 {
                                                     (listPengarang && listPengarang.length > 0) ?
                                                         listPengarang.map((item, index) => {
@@ -177,7 +239,10 @@ class FormBuku extends Component {
                                                         }) : null
                                                 }
                                             </CSelect>
-                                            <CFormText className="help-block">Please select pengarang</CFormText>
+                                            {
+                                                (formValidation.PengarangId.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.PengarangId.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>

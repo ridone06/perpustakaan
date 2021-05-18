@@ -9,10 +9,10 @@ import {
     CCol,
     CForm,
     CFormGroup,
-    CFormText,
     CInput,
     CLabel,
     CSelect,
+    CInvalidFeedback,
     CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
@@ -33,13 +33,19 @@ class FormPengembalian extends Component {
                 AnggotaId: this.props.peminjaman.data.AnggotaId,
                 PetugasId: 1,
                 Details: this.props.peminjaman.data.Details
+            },
+            formValidation: {
+                TanggalPengembalian: {
+                    invalid: null,
+                    message: "Please enter tanggal pengembalian"
+                }
             }
         }
 
         this.onClickSave = this.onClickSave.bind(this);
     }
 
-    
+
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.data) {
             this.state.param.TanggalPengembalian = nextProps.data.TanggalPengembalian;
@@ -59,6 +65,9 @@ class FormPengembalian extends Component {
 
     onInputChane(key, value) {
         this.state.param[key] = value;
+        if (this.state.formValidation[key])
+            this.state.formValidation[key].invalid = (this.state.param[key] || "") === "";
+
         this.setState({
             param: {
                 ...this.state.param
@@ -67,15 +76,25 @@ class FormPengembalian extends Component {
     }
 
     onClickSave() {
-        this.state.param.PetugasId = 1;
-        this.props.savePengembalian(this.state.param, 0);
+        if (this.isValid()) {
+            this.state.param.PetugasId = 1;
+            this.props.savePengembalian(this.state.param, 0);
+        }
+    }
+
+    isValid() {
+        this.state.formValidation.TanggalPengembalian.invalid = (this.state.param.TanggalPengembalian || "") === "";
+
+        this.setState({
+            ...this.state.formValidation
+        });
+
+        return !this.state.formValidation.TanggalPengembalian.invalid;
     }
 
     render() {
         const { isLoading = false, listAnggota = null, disabled = false } = this.props;
-        const { param } = this.state;
-
-        console.log("disabled", disabled);
+        const { param, formValidation } = this.state;
 
         return (
             <>
@@ -99,8 +118,12 @@ class FormPengembalian extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.TanggalPengembalian}
-                                                onChange={(e) => this.onInputChane("TanggalPengembalian", e.target.value)} />
-                                            <CFormText className="help-block">Please enter tanggal pengembalian</CFormText>
+                                                onChange={(e) => this.onInputChane("TanggalPengembalian", e.target.value)}
+                                                invalid={formValidation.TanggalPengembalian.invalid} />
+                                            {
+                                                (formValidation.TanggalPengembalian.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.TanggalPengembalian.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                     <CFormGroup row>
@@ -116,7 +139,6 @@ class FormPengembalian extends Component {
                                                 disabled={disabled}
                                                 value={param.Denda}
                                                 onChange={(e) => this.onInputChane("Denda", e.target.value)} />
-                                            <CFormText className="help-block">Please enter denda</CFormText>
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>

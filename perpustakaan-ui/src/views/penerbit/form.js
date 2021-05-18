@@ -9,10 +9,10 @@ import {
     CCol,
     CForm,
     CFormGroup,
-    CFormText,
     CInput,
     CLabel,
     CTextarea,
+    CInvalidFeedback,
     CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
@@ -27,6 +27,20 @@ class FormPenerbit extends Component {
                 Nama: "",
                 Alamat: "",
                 NoTlp: ""
+            },
+            formValidation: {
+                Nama: {
+                    invalid: null,
+                    message: "Please enter nama"
+                },
+                Alamat: {
+                    invalid: null,
+                    message: "Please enter alamat"
+                },
+                NoTlp: {
+                    invalid: null,
+                    message: "Please enter no tlp"
+                }
             }
         }
 
@@ -49,6 +63,9 @@ class FormPenerbit extends Component {
 
     onInputChane(key, value) {
         this.state.param[key] = value;
+        if (this.state.formValidation[key])
+            this.state.formValidation[key].invalid = (this.state.param[key] || "") === "";
+
         this.setState({
             param: {
                 ...this.state.param
@@ -57,12 +74,28 @@ class FormPenerbit extends Component {
     }
 
     onClickSave() {
-        this.props.save(this.state.param, this.props.dataId);
+        if (this.isValid()) {
+            this.props.save(this.state.param, this.props.dataId);
+        }
+    }
+
+    isValid() {
+        this.state.formValidation.Nama.invalid = (this.state.param.Nama || "") === "";
+        this.state.formValidation.Alamat.invalid = (this.state.param.Alamat || "") === "";
+        this.state.formValidation.NoTlp.invalid = (this.state.param.NoTlp || "") === "";
+
+        this.setState({
+            ...this.state.formValidation
+        });
+
+        return !this.state.formValidation.Nama.invalid
+            && !this.state.formValidation.Alamat.invalid
+            && !this.state.formValidation.NoTlp.invalid;;
     }
 
     render() {
         const { isLoading = false, disabled = false, dataId } = this.props;
-        const { param } = this.state;
+        const { param, formValidation } = this.state;
 
         console.log("dataId", dataId);
 
@@ -88,8 +121,12 @@ class FormPenerbit extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.Nama}
-                                                onChange={(e) => this.onInputChane("Nama", e.target.value)} />
-                                            <CFormText className="help-block">Please enter nama</CFormText>
+                                                onChange={(e) => this.onInputChane("Nama", e.target.value)}
+                                                invalid={formValidation.Nama.invalid} />
+                                            {
+                                                (formValidation.Nama.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.Nama.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                     <CFormGroup row>
@@ -104,8 +141,12 @@ class FormPenerbit extends Component {
                                                 autoComplete="off"
                                                 disabled={disabled}
                                                 value={param.NoTlp}
-                                                onChange={(e) => this.onInputChane("NoTlp", e.target.value)} />
-                                            <CFormText className="help-block">Please enter no. tlp</CFormText>
+                                                onChange={(e) => this.onInputChane("NoTlp", e.target.value)}
+                                                invalid={formValidation.NoTlp.invalid} />
+                                            {
+                                                (formValidation.NoTlp.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.NoTlp.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>
@@ -122,8 +163,12 @@ class FormPenerbit extends Component {
                                                 rows="4"
                                                 disabled={disabled}
                                                 value={param.Alamat}
-                                                onChange={(e) => this.onInputChane("Alamat", e.target.value)} />
-                                            <CFormText className="help-block">Please enter alamat</CFormText>
+                                                onChange={(e) => this.onInputChane("Alamat", e.target.value)}
+                                                invalid={formValidation.Alamat.invalid} />
+                                            {
+                                                (formValidation.Alamat.invalid) ?
+                                                    <CInvalidFeedback>{formValidation.Alamat.message}</CInvalidFeedback> : null
+                                            }
                                         </CCol>
                                     </CFormGroup>
                                 </CCol>
